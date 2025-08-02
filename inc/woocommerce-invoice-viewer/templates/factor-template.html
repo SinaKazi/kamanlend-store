@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <title>فاکتور رسمی</title>
+  <style>
+    body {
+      font-family: shabnam;
+      /*direction: rtl;*/
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: center;
+    }
+
+    .header {
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      /*margin-bottom: 20px;*/
+    }
+
+    .section-title {
+      font-weight: bold;
+      background: #eee;
+      padding: 5px;
+    }
+
+    .info-table td {
+      border: none;
+      padding: 4px;
+      text-align: right;
+    }
+
+    .date-num td {
+        border: none;
+    }
+
+    table.info-table th {
+      border: none;
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">صورتحساب فروش نیابتی</div>
+  <div style="float: left; width: 30%; direction: ltr;">
+  <table class="date-num" style="direction: rtl; ">
+    <tr>
+      <td>تاریخ :</td>
+      <td>{{order_date}}</td>
+    </tr>
+    <tr>
+      <td>شماره فاکتور :</td>
+      <td>{{invoice_number}}</td>
+    </tr>
+  </table>
+  </div>
+<div style="clear: both;"></div>
+  <div class="section-title">مشخصات حق‌العمل‌کار</div>
+  <table class="info-table">
+    <tr>
+      <td colspan="2">نام شخص حقیقی / حقوقی:</td>
+      <td>{{seller_name}}</td>
+      <td>کد اقتصادی:</td>
+      <td>{{seller_economic_code}}</td>
+      <td>شماره ثبت:</td>
+      <td>{{seller_register_code}}</td>
+    </tr>
+    <tr>
+      <td>آدرس کامل : استان :</td>
+      <td>{{seller_state}}</td>
+      <td>شهرستان:</td>
+      <td>{{seller_city}}</td>
+      <td>کد پستی:</td>
+      <td>{{seller_postal_code}}</td>
+      <td>شناسه ملی:</td>
+      <td>{{seller_national_id}}</td>
+    </tr>
+    <tr>
+      <td>نشانی:</td>
+      <td colspan="4">{{seller_address}}</td>
+      <td>تلفن:</td>
+      <td>{{seller_phone}}</td>
+    </tr>
+
+  </table>
+
+  <div class="section-title">مشخصات خریدار</div>
+  <table class="info-table">
+    <tr>
+      <td>نام شخص حقیقی / حقوقی:</td>
+      <td>{{buyer_name}}</td>
+      <td>کد ملی:</td>
+      <td>{{buyer_national_code}}</td>
+    </tr>
+    <tr>
+      <td>آدرس کامل : استان :</td>
+      <td>{{buyer_state}}</td>
+      <td>شهرستان:</td>
+      <td>{{buyer_city}}</td>
+      <td>کد پستی:</td>
+      <td>{{buyer_postal_code}}</td>
+    </tr>
+    <tr>
+      <td>نشانی :</td>
+      <td colspan="4">{{buyer_address}}</td>
+      <td>تلفن:</td>
+      <td>{{buyer_phone}}</td>
+    </tr>
+  </table>
+
+  <div class="section-title">مشخصات کالا یا خدمات</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ردیف</th>
+        <th>کد کالا</th>
+        <th>شرح کالا یا خدمات</th>
+        <th>آمر</th>
+        <th>تعداد / مقدار</th>
+        <th>مبلغ (ریال)</th>
+        <th>مبلغ تخفیف (ریال)</th>
+        <th>مبلغ کل پس از تخفیف (ریال)</th>
+        <th>جمع مالیات و عوارض ارزش افزوده (ریال)</th>
+        <th>جمع کل پس از تخفیف و مالیات و عوارض (ریال)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{order_items_table}}
+    </tbody>
+  </table>
+
+
+  <table>
+    <tr>
+      <td style="text-align:right;" colspan="2"><strong>مبلغ قابل پرداخت:</strong></td>
+      <td>{{order_total}}</td>
+    </tr>
+  </table>
+  <table class="info-table">
+    <tr>
+      <td style="height: 50px; border: 1px solid #000; width: 50%; vertical-align: top;">مهر و امضا فروشنده:</td>
+      <td style="height: 50px; border: 1px solid #000; width: 50%; vertical-align: top;">مهر و امضا خریدار:</td>
+    </tr>
+  </table>
+
+</body>
+
+</html>
