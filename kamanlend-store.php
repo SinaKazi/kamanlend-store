@@ -2,7 +2,7 @@
 /*
 Plugin Name: Kamanlend Store
 Description: ویژگی های جدید سایت کمان استور
-Version: 6.1
+Version: 7.0
 Author: Sina Kazemi
 */
 
@@ -25,6 +25,8 @@ require_once plugin_dir_path(__FILE__) . 'inc/installment-fee-handler.php';
 require_once plugin_dir_path(__FILE__) . 'inc/feature-template/admin.php';
 require_once plugin_dir_path(__FILE__) . 'inc/feature-template/ajax-handlers.php';
 require_once plugin_dir_path(__FILE__) . 'inc/price-list/price-import.php';
+require_once plugin_dir_path(__FILE__) . 'inc/popup-gateway/settings-page.php';
+require_once plugin_dir_path(__FILE__) . 'inc/popup-gateway/functions.php';
 
 // Load JS
 add_action('wp_enqueue_scripts', function () {
@@ -194,3 +196,48 @@ function apply_seller_filter_to_product_query($query) {
     }
 }
 
+add_action('pre_get_posts', 'filter_dokan_orders_query_by_status');
+
+function filter_dokan_orders_query_by_status($query) {
+    if ( ! is_main_query() || ! is_user_logged_in() ) {
+        return;
+    }
+
+    // فقط در فرانت اجرا بشه، نه wp-admin
+    if ( is_admin() ) {
+        return;
+    }
+
+    // اطمینان از اینکه در پیشخوان فروشنده هستیم
+    if ( function_exists( 'dokan_is_seller_dashboard' ) && dokan_is_seller_dashboard() ) {
+        global $wp;
+
+        if ( isset( $wp->query_vars['dashboard'] ) && $wp->query_vars['dashboard'] === 'orders' ) {
+
+            if ( isset( $query->query_vars['post_type'] ) && $query->query_vars['post_type'] === 'shop_order' ) {
+                $query->set( 'post_status', array( 'wc-processing', 'wc-completed' ) );
+                error_log('✅ سفارش‌ها فیلتر شدند فقط تکمیل شده و در حال انجام');
+            }
+        }
+    }
+}
+/////////پاپ آپ درگاه
+function kamanlend_popup_gateway_enqueue_scripts() {
+    wp_enqueue_script('popup-gateway-js', plugin_dir_url(__FILE__) . 'assets/popup.js', array('jquery'), null, true);
+    wp_enqueue_style('popup-gateway-css', plugin_dir_url(__FILE__) . 'assets/popup.css');
+
+    // ارسال متن پاپ‌آپ و وضعیت فعال بودن آن به جاوااسکریپت
+    $payment_gateways = WC()->payment_gateways->get_available_payment_gateways();
+    $popup_data = array();
+
+    foreach ($payment_gateways as $gateway) {
+        $popup_data[$gateway->id] = array(
+            'popup_text' => get_option('popup_text_' . $gateway->id, ''),
+            'is_popup_enabled' => get_option('popup_enabled_' . $gateway->id, 'no') === 'yes' ? true : false
+        );
+    }
+
+    wp_localize_script('popup-gateway-js', 'popupGatewayData', $popup_data);
+}
+add_action('wp_enqueue_scripts', 'kamanlend_popup_gateway_enqueue_scripts');
+/////////////////
